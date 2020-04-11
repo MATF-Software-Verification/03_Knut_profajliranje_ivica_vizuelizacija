@@ -3,7 +3,7 @@ from src.BasicBlock import BasicBlock
 class InputProgram:
     def __init__(self, code):
         self.instructions = self.make_instructions(code)
-        self.basic_blocks = self.divide_into_basic_blocks(self.instructions)
+        self.basic_blocks = self.divide_into_basic_blocks
 
     def make_instructions(self, code):
         return code.split('\n')
@@ -24,8 +24,9 @@ class InputProgram:
         control_flow_changers = ['if', 'else', 'elif']
 
         for i in range(len(instructions)):
-            if any(cfc in instructions[i] for cfc in control_flow_changers):
-                if (i + 1) != len(instructions):
+             if any(cfc in instructions[i] for cfc in control_flow_changers):
+                if i + 1 != len(instructions):
                     leaders.append(instructions[i+1])
 
         return list(set(leaders))
+

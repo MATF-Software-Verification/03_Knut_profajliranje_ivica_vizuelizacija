@@ -12,7 +12,7 @@ class BasicBlock:
     def set_instructions(self, instructions):
         self.instructions = instructions
 
-    def get_lead(self):
+    def getLead(self):
         return self.lead
 
     def __str__(self):
