@@ -23,11 +23,12 @@ class InputProgram:
     def get_leaders(self, instructions):
         leaders = [instructions[0]]
         control_flow_changers = ['if', 'else', 'elif']
-        function_call = re.compile('\w+\([\w\s\d|,]*\)')
+
 
         for i in range(len(instructions)):
-            function_call_occurs = function_call.findall(instructions[i])
-            if any(cfc in instructions[i] for cfc in control_flow_changers) or 0 != len(function_call_occurs):
+            function_call_occurs = len(re.findall('^(?!def)(\w|\_)+\([\w\s\d|,]*\)', instructions[i].strip(),
+                                                  re.IGNORECASE))
+            if any(cfc in instructions[i] for cfc in control_flow_changers) or 0 != function_call_occurs:
                 if i + 1 != len(instructions):
                     leaders.append(instructions[i+1])
 

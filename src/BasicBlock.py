@@ -16,7 +16,6 @@ class BasicBlock:
         return self.lead
 
     def __str__(self):
-        str = ""
         str = "-----------\n"
         for instr in self.instructions:
             if(instr != ""):

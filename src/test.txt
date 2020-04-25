@@ -1,6 +1,37 @@
-x = 10
-h()
-if x < 5:
-    print x
-else:
-    print 5
+
+
+def A():
+    a = 10
+    b = 12
+
+    B()
+    C()
+
+
+def B():
+    C()
+
+
+def C():
+    # ...
+    # ...
+    whatever = 13
+    something = whatever + 15
+
+
+def E(arg):
+    if arg > 0:
+        B()
+    else:
+        C()
+
+
+def main():
+    # pocetni blok
+    A()
+    B()
+    E(10)
+
+
+if __name__ == "__main__":
+    main()
