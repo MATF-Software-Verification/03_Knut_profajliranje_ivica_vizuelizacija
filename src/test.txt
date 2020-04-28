@@ -3,6 +3,10 @@
 def A():
     a = 10
     b = 12
+    print(a, b)
+
+    for i in range(2):
+        D()
 
     B()
     C()
@@ -13,10 +17,9 @@ def B():
 
 
 def C():
-    # ...
-    # ...
     whatever = 13
     something = whatever + 15
+    print(something)
 
 
 def E(arg):
@@ -25,12 +28,20 @@ def E(arg):
     else:
         C()
 
+    D()
+
+
+def D():
+    a = 14
+    print(a)
+
 
 def main():
     # pocetni blok
     A()
     B()
     E(10)
+    E(-10)
 
 
 if __name__ == "__main__":
