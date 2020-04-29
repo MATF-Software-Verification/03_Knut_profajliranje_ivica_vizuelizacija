@@ -9,7 +9,10 @@ class Graph:
         self.graph.add_node('start')
         relations = output_text.split('---------------')
         for relation in relations:
-            u, v = relation.strip().split('\n')
+            if not '->' in relation:
+                continue
+
+            u, v = relation.strip().split('->')
             self.graph.add_node(u)
             self.graph.add_node(v)
             self.graph.add_weighted_edges_from([(u, v, 1)])
