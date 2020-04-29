@@ -21,9 +21,8 @@ instrumentalization_output = open('{self.instrumentalization_output_file}', 'w+'
 def print_func_info():
     curr_frame = inspect.currentframe()
     call_frame = inspect.getouterframes(curr_frame, 2)
-    
-    print('BLOCK: ' + call_frame[1][3], file=instrumentalization_output)
-    print('Called by BLOCK: ' + call_frame[2][3], file=instrumentalization_output)
+
+    print(call_frame[2][3] + ' -> ' + call_frame[1][3], file=instrumentalization_output)
     print('---------------', file=instrumentalization_output)
 
 '''
@@ -67,7 +66,9 @@ def main():
     instr = Instrumentalizator(sys.argv[1], sys.argv[2], './instrumentalization_output.txt')
     instr.instrumentalize()
 
-    # run newly created, instrumentalized, source file
+    print('Running instrumentalized code...', file=sys.stderr)
+    print('------------------------------', file=sys.stderr)
+    # run newly created and instrumentalized, source file
     command = f'python {Path(sys.argv[2])}'
     os.system(command)
 
