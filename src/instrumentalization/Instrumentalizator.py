@@ -3,6 +3,7 @@ import sys
 import re
 import os
 
+from src.utils.Graph import Graph
 
 class Instrumentalizator():
     def __init__(self, path_to_input, path_to_output, path_to_instrumentalization_output):
@@ -71,6 +72,11 @@ def main():
     # run newly created and instrumentalized, source file
     command = f'python {Path(sys.argv[2])}'
     os.system(command)
+
+    g = Graph()
+
+    with open ('instrumentalization_output.txt', 'r') as instr_out:
+        g.create_graph_from_blocks(instr_out.read())
 
 
 if __name__ == "__main__":
