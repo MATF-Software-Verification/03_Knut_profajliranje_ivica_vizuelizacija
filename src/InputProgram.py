@@ -41,7 +41,7 @@ class InputProgram:
         control_flow_changers = ['if', 'else', 'elif']
 
         for i in range(len(instructions)):
-            function_call_occurs = len(re.findall('^(?!def)(\w|\_)+\([\w\s\d|,]*\)', instructions[i].strip(),
+            function_call_occurs = len(re.findall(r'^(?!def)(\w|\_)+\([\w\s\d|,]*\)', instructions[i].strip(),
                                                   re.IGNORECASE))
             if any(cfc in instructions[i] for cfc in control_flow_changers) or 0 != function_call_occurs:
                 if i + 1 != len(instructions):
