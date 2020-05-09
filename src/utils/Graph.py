@@ -9,7 +9,7 @@ class Graph:
         self.graph.add_node('start')
         relations = output_text.split('---------------')
         for i in range(len(relations)):
-            if not '->' in relations[i]:
+            if '->' not in relations[i]:
                 continue
 
             u, v = relations[i].strip().split('->')
@@ -19,3 +19,6 @@ class Graph:
 
             self.graph.add_node(v)
             self.graph.add_weighted_edges_from([(u, v, 1)])
+
+    def create_spanning_tree(self):
+        return nx.minimum_spanning_tree(self.graph)

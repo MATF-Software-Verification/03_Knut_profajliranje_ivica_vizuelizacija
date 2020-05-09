@@ -77,6 +77,8 @@ def main():
 
     with open ('instrumentalization_output.txt', 'r') as instr_out:
         g.create_graph_from_blocks(instr_out.read())
+        tree = g.create_spanning_tree()
+
 
 
 if __name__ == "__main__":
