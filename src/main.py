@@ -2,8 +2,8 @@ import sys
 import os
 from pathlib import Path
 
-from InputProgram import InputProgram
-from checker import check_validity
+from src.InputProgram import InputProgram
+from src.checker import check_validity
 
 def main():
     if len(sys.argv) != 3:
