@@ -27,32 +27,6 @@ class BasicBlock:
     def get_lead(self):
         return self.lead
 
-    def stringify_block2(self, block_id):
-        block_type = ''
-        for instr in self.instructions:
-            if instr.find('if ') != -1:
-                block_type = 'if then'
-                break
-            elif instr.find('else:') != -1:
-                block_type = 'else'
-                break
-            elif instr.find('elif ') != -1:
-                block_type = 'elif'
-                break
-            elif instr.find('for ') != -1:
-                block_type = 'for'
-                break
-            else:
-                block_type = 'ordinary'
-                
-        ret_str = f"# -BEGIN BLOCK id: {block_id} type: {block_type} parents: {'TODO'}\n"
-        for instr in self.instructions:
-            if instr != "":
-                ret_str += instr + "\n"
-        ret_str += f"# -END BLOCK id: {block_id}"
-        
-        return ret_str
-
     def stringify_block(self):
         ret_str = f"# -BEGIN BLOCK id: {self.get_id()} type: {self.get_type().value} parents: {'TODO'}\n"
         for instr in self.instructions:
