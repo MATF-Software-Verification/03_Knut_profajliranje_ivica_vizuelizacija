@@ -29,23 +29,29 @@ class InputProgram:
             if -1 == cl_in_instructions:
                 return basic_blocks
 
-            for instruction in instructions[cl_in_instructions : nl_in_instructions]:
+            for instruction in instructions[cl_in_instructions: nl_in_instructions]:
                 basic_blocks[-1].add_instruction(instruction)
 
-            instructions = instructions[nl_in_instructions : -1]
+            instructions = instructions[nl_in_instructions:]
 
         return basic_blocks
 
     def get_leaders(self, instructions):
         leaders = [instructions[0]]
-        control_flow_changers = ['if', 'else', 'elif']
+        control_flow_changers = ['if', 'else', 'elif', 'for']
 
+        num_tabs = 0
         for i in range(len(instructions)):
+            instruction = instructions[i]
+
             function_call_occurs = len(re.findall(r'^(?!def)(\w|\_)+\([\w\s\d|,]*\)', instructions[i].strip(),
-                                                  re.IGNORECASE))
-            if any(cfc in instructions[i] for cfc in control_flow_changers) or 0 != function_call_occurs:
+                                         re.IGNORECASE))
+            num_tabs_prev = num_tabs
+            num_tabs = int((len(instruction) - len(instruction.lstrip(' ')))/4)
+            if any(cfc in instruction for cfc in control_flow_changers) or 0 != function_call_occurs\
+                    or num_tabs_prev > num_tabs:
                 if i + 1 != len(instructions):
-                    leaders.append(instructions[i+1])
+                    leaders.append(instruction)
 
         return leaders
 
