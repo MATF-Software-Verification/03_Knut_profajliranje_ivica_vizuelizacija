@@ -16,10 +16,11 @@ def main():
 
     with open(Path(sys.argv[1]), 'r') as input_file:
         input_program = InputProgram(input_file.read())
+        input_program.basic_blocks = input_program.divide_into_basic_blocks(input_program.instructions)
 
         block_id = 1
-        basic_blocks = input_program.divide_into_basic_blocks(input_program.instructions)
-        for block in basic_blocks:
+        input_program.determine_parents()
+        for block in input_program.basic_blocks:
             print(block.stringify_block())
             block_id += 1
 

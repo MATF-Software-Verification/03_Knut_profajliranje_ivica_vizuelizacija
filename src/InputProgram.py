@@ -1,10 +1,11 @@
 from src.blocks.BasicBlock import BasicBlock
 import re
 
+
 class InputProgram:
     def __init__(self, code):
         self.instructions = self.make_instructions(code)
-        self.basic_blocks = self.divide_into_basic_blocks
+        self.basic_blocks = []
 
     def make_instructions(self, code):
         code = code.split('\n')
@@ -18,19 +19,20 @@ class InputProgram:
         leaders = self.get_leaders(instructions)
         basic_blocks = []
 
-        for i in range(len(leaders)-1):
-            current_leader = leaders[i]
-            next_leader = leaders[i+1]
+        current_leader = leaders[0]
+        next_leader = leaders[1]
 
+        leaders_size = len(leaders)
+        for i in range(leaders_size):
             cl_in_instructions = instructions.index(current_leader) if current_leader in instructions else -1
             nl_in_instructions = instructions.index(next_leader) if next_leader in instructions else -1
 
             if i == 0:
                 basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.ROOT))
-            elif 'if ' in current_leader:
-                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.IF_THEN))
             elif 'elif ' in current_leader:
                 basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.ELIF))
+            elif 'if ' in current_leader:
+                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.IF_THEN))
             elif 'else: ' in current_leader:
                 basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.ELSE))
             else:
@@ -43,6 +45,10 @@ class InputProgram:
                 basic_blocks[-1].add_instruction(instruction)
 
             instructions = instructions[nl_in_instructions:]
+
+            current_leader = next_leader
+            if i < leaders_size - 1:
+                next_leader = leaders[i+1]
 
         return basic_blocks
 
@@ -65,6 +71,21 @@ class InputProgram:
 
         return leaders
 
-    def determine_parents(self, blocks):
-        for block in blocks:
-            pass
+    def determine_parents(self):
+        blocks_size = len(self.basic_blocks)
+        for i in range(blocks_size):
+            block = self.basic_blocks[i]
+            b_type = block.get_type()
+            b_id = block.get_id()
+
+            if b_type in [BasicBlock.BlockType.ROOT, BasicBlock.BlockType.ORDINARY]:
+                self.basic_blocks[i+1].parents.append(b_id)
+            elif b_type in [BasicBlock.BlockType.IF_THEN, BasicBlock.BlockType.ELIF, BasicBlock.BlockType.ELSE]:
+                self.basic_blocks[i+1].parents.append(b_id) if i + 1 < blocks_size else -1
+                self.basic_blocks[i+2].parents.append(b_id) if i + 2 < blocks_size else -1
+
+
+
+
+
+        return
