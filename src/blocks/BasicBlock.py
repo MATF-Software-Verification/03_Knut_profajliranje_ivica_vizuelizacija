@@ -1,7 +1,13 @@
+import enum
+
+
 class BasicBlock:
-    def __init__(self, lead):
+    def __init__(self, lead, b_id, b_type):
         self.lead = lead
         self.instructions = []
+        self.id = b_id
+        self.type = b_type
+        self.parents = []
 
     def add_instruction(self, instruction):
         self.instructions.append(instruction)
@@ -12,16 +18,22 @@ class BasicBlock:
     def set_instructions(self, instructions):
         self.instructions = instructions
 
+    def get_type(self):
+        return self.type
+
+    def get_id(self):
+        return self.id
+
     def get_lead(self):
         return self.lead
 
-    def stringify_block(self, block_id):
+    def stringify_block2(self, block_id):
         block_type = ''
         for instr in self.instructions:
             if instr.find('if ') != -1:
                 block_type = 'if then'
                 break
-            elif instr.find('else ') != -1:
+            elif instr.find('else:') != -1:
                 block_type = 'else'
                 break
             elif instr.find('elif ') != -1:
@@ -40,3 +52,20 @@ class BasicBlock:
         ret_str += f"# -END BLOCK id: {block_id}"
         
         return ret_str
+
+    def stringify_block(self):
+        ret_str = f"# -BEGIN BLOCK id: {self.get_id()} type: {self.get_type().value} parents: {'TODO'}\n"
+        for instr in self.instructions:
+            if instr != "":
+                ret_str += instr + "\n"
+        ret_str += f"# -END BLOCK id: {self.get_id()}"
+
+        return ret_str
+
+    class BlockType(enum.Enum):
+        ROOT = 'root'
+        ORDINARY = 'ordinary'
+        IF_THEN = 'if then'
+        ELSE = 'else'
+        ELIF = 'elif'
+        ENDING = 'ending'

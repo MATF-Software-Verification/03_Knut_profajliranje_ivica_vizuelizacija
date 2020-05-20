@@ -1,4 +1,4 @@
-from src.BasicBlock import BasicBlock
+from src.blocks.BasicBlock import BasicBlock
 import re
 
 class InputProgram:
@@ -25,7 +25,17 @@ class InputProgram:
             cl_in_instructions = instructions.index(current_leader) if current_leader in instructions else -1
             nl_in_instructions = instructions.index(next_leader) if next_leader in instructions else -1
 
-            basic_blocks.append(BasicBlock(leaders))
+            if i == 0:
+                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.ROOT))
+            elif 'if ' in current_leader:
+                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.IF_THEN))
+            elif 'elif ' in current_leader:
+                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.ELIF))
+            elif 'else: ' in current_leader:
+                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.ELSE))
+            else:
+                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.ORDINARY))
+
             if -1 == cl_in_instructions:
                 return basic_blocks
 
@@ -55,3 +65,6 @@ class InputProgram:
 
         return leaders
 
+    def determine_parents(self, blocks):
+        for block in blocks:
+            pass

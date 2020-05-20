@@ -5,12 +5,12 @@ import os
 
 from src.utils.Graph import Graph
 
+
 class Instrumentalizator():
     def __init__(self, path_to_input, path_to_output, path_to_instrumentalization_output):
         self.input_file = Path(path_to_input)
         self.output_file = Path(path_to_output)
         self.instrumentalization_output_file = Path(path_to_instrumentalization_output)
-
 
     def instrumentalization_init(self):
         return f'''
@@ -78,7 +78,6 @@ def main():
     with open ('instrumentalization_output.txt', 'r') as instr_out:
         g.create_graph_from_blocks(instr_out.read())
         tree = g.create_spanning_tree()
-
 
 
 if __name__ == "__main__":

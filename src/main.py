@@ -20,7 +20,7 @@ def main():
         block_id = 1
         basic_blocks = input_program.divide_into_basic_blocks(input_program.instructions)
         for block in basic_blocks:
-            print(block.stringify_block(block_id))
+            print(block.stringify_block())
             block_id += 1
 
 
