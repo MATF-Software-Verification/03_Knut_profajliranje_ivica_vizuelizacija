@@ -42,4 +42,6 @@ class BasicBlock:
         IF_THEN = 'if then'
         ELSE = 'else'
         ELIF = 'elif'
+        FUNCTION = 'function'
+        FOR = 'for'
         ENDING = 'ending'
