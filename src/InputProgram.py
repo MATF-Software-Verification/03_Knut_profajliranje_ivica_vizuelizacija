@@ -23,20 +23,20 @@ class InputProgram:
         next_leader = leaders[1]
 
         leaders_size = len(leaders)
-        for i in range(leaders_size):
+        for i in range(1, leaders_size):
             cl_in_instructions = instructions.index(current_leader) if current_leader in instructions else -1
             nl_in_instructions = instructions.index(next_leader) if next_leader in instructions else -1
 
             if i == 0:
-                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.ROOT))
+                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.ROOT))
             elif 'elif ' in current_leader:
-                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.ELIF))
+                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.ELIF))
             elif 'if ' in current_leader:
-                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.IF_THEN))
+                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.IF_THEN))
             elif 'else: ' in current_leader:
-                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.ELSE))
+                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.ELSE))
             else:
-                basic_blocks.append(BasicBlock(current_leader, i+1, BasicBlock.BlockType.ORDINARY))
+                basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.ORDINARY))
 
             if -1 == cl_in_instructions:
                 return basic_blocks
@@ -48,7 +48,12 @@ class InputProgram:
 
             current_leader = next_leader
             if i < leaders_size - 1:
-                next_leader = leaders[i+1]
+                next_leader = leaders[i + 1]
+
+        basic_blocks.append(BasicBlock(next_leader, i + 1, BasicBlock.BlockType.ORDINARY))
+        nl_in_instructions = instructions.index(next_leader) if next_leader in instructions else -1
+        for instruction in instructions[nl_in_instructions:]:
+            basic_blocks[-1].add_instruction(instruction)
 
         return basic_blocks
 
@@ -61,13 +66,16 @@ class InputProgram:
             instruction = instructions[i]
 
             function_call_occurs = len(re.findall(r'^(?!def)(\w|\_)+\([\w\s\d|,]*\)', instructions[i].strip(),
-                                         re.IGNORECASE))
+                                                  re.IGNORECASE))
             num_tabs_prev = num_tabs
-            num_tabs = int((len(instruction) - len(instruction.lstrip(' ')))/4)
-            if any(cfc in instruction for cfc in control_flow_changers) or 0 != function_call_occurs\
-                    or num_tabs_prev > num_tabs:
+            num_tabs = self.calculate_tabs(instruction)
+            if any(cfc in instruction for cfc in control_flow_changers) or 0 != function_call_occurs:
+                leaders.append(instruction)
                 if i + 1 != len(instructions):
-                    leaders.append(instruction)
+                    leaders.append(instructions[i+1])
+            elif num_tabs_prev > num_tabs:
+                leaders.append(instruction)
+
 
         return leaders
 
@@ -79,13 +87,17 @@ class InputProgram:
             b_id = block.get_id()
 
             if b_type in [BasicBlock.BlockType.ROOT, BasicBlock.BlockType.ORDINARY]:
-                self.basic_blocks[i+1].parents.append(b_id)
+                self.basic_blocks[i + 1].parents.add(b_id) if i + 1 < blocks_size else -1
             elif b_type in [BasicBlock.BlockType.IF_THEN, BasicBlock.BlockType.ELIF, BasicBlock.BlockType.ELSE]:
-                self.basic_blocks[i+1].parents.append(b_id) if i + 1 < blocks_size else -1
-                self.basic_blocks[i+2].parents.append(b_id) if i + 2 < blocks_size else -1
+                self.basic_blocks[i + 1].parents.add(b_id) if i + 1 < blocks_size else -1
+                self.basic_blocks[i + 2].parents.add(b_id) if i + 2 < blocks_size else -1
 
-
-
-
+            if i < blocks_size - 1:
+                next_block = self.basic_blocks[i + 1]
+                if self.calculate_tabs(self.basic_blocks[i].get_lead()) < self.calculate_tabs(next_block.get_lead()):
+                    next_block.parents.add(b_id)
 
         return
+
+    def calculate_tabs(self, instruction):
+        return int((len(instruction) - len(instruction.lstrip(' '))) / 4)

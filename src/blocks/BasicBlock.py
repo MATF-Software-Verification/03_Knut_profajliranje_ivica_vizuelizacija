@@ -7,7 +7,7 @@ class BasicBlock:
         self.instructions = []
         self.id = b_id
         self.type = b_type
-        self.parents = []
+        self.parents = set()
 
     def add_instruction(self, instruction):
         self.instructions.append(instruction)
