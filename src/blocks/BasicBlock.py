@@ -27,7 +27,7 @@ class BasicBlock:
         return self.lead
 
     def stringify_block(self):
-        ret_str = f"# -BEGIN BLOCK id: {self.get_id()} type: {self.get_type().value}"
+        ret_str = f"# -BEGIN BLOCK id: {self.get_id()} type: {self.get_type().value}\n"
         for instr in self.instructions:
             if instr != "":
                 ret_str += instr + "\n"
