@@ -7,7 +7,6 @@ class BasicBlock:
         self.instructions = []
         self.id = b_id
         self.type = b_type
-        self.parents = set()
 
     def add_instruction(self, instruction):
         self.instructions.append(instruction)
@@ -28,7 +27,7 @@ class BasicBlock:
         return self.lead
 
     def stringify_block(self):
-        ret_str = f"# -BEGIN BLOCK id: {self.get_id()} type: {self.get_type().value} parents: {self.parents}\n"
+        ret_str = f"# -BEGIN BLOCK id: {self.get_id()} type: {self.get_type().value}"
         for instr in self.instructions:
             if instr != "":
                 ret_str += instr + "\n"

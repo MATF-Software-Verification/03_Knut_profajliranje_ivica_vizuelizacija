@@ -5,7 +5,7 @@ import re
 class InputProgram:
     def __init__(self, code):
         self.instructions = self.make_instructions(code)
-        self.basic_blocks = []
+        self.basic_blocks = self.divide_into_basic_blocks(self.instructions)
 
     def make_instructions(self, code):
         code = code.split('\n')
@@ -79,51 +79,26 @@ class InputProgram:
             elif num_tabs_prev > num_tabs:
                 leaders.append(instruction)
 
-
         return leaders
 
     def determine_parents(self):
-        # TODO: not working properly yet, fix errors
-        blocks_size = len(self.basic_blocks)
-        for i in range(blocks_size):
-            block = self.basic_blocks[i]
-            b_type = block.get_type()
-            b_id = block.get_id()
+        block_matrix = []
+        num_tabs = 0
+        num_tabs_prev = 0
+        with open('blocks.txt', "w+") as output:
+            for block in self.basic_blocks:
+                if num_tabs_prev > num_tabs and block.type in [BasicBlock.BlockType.ORDINARY,
+                                                               BasicBlock.BlockType.FUNCTION, BasicBlock.BlockType.ENDING]:
+                    current_block_info = [block.type.name, block.id, num_tabs_prev - num_tabs, False]
+                else:
+                    current_block_info = [block.type.name, block.id, 0, False]
 
-            if b_type in [BasicBlock.BlockType.ROOT, BasicBlock.BlockType.ORDINARY]:
-                self.basic_blocks[i + 1].parents.add(b_id) if i + 1 < blocks_size else -1
-            elif b_type in [BasicBlock.BlockType.IF_THEN, BasicBlock.BlockType.ELIF, BasicBlock.BlockType.ELSE]:
-                self.basic_blocks[i + 1].parents.add(b_id) if i + 1 < blocks_size else -1
-                self.basic_blocks[i + 2].parents.add(b_id) if i + 2 < blocks_size else -1
+                block_matrix.append(current_block_info)
+                output.write('%s\n' % current_block_info)
 
-            if b_type == BasicBlock.BlockType.IF_THEN:
-                try:
-                    next_else = next(block.get_id() for block in self.basic_blocks[i+2:] if block.get_type() == BasicBlock.BlockType.ELSE) \
-                        if i + 2 < blocks_size else None
-                    first_non_conditional_block = next_else + 2 if next_else + 2 < blocks_size \
-                        else next(block.get_id() for block in self.basic_blocks[i+2:] if block.get_type() != BasicBlock.BlockType.IF_THEN)
-                    if first_non_conditional_block is not None:
-                        for block in self.basic_blocks[i+2:self.basic_blocks.index(first_non_conditional_block)]:
-                            if block.get_type() in [BasicBlock.BlockType.ELIF, BasicBlock.BlockType.ELSE]:
-                                block.parents.add(b_id)
-                except:
-                    pass
-
-            try:
-                if b_type == BasicBlock.BlockType.FOR:
-                    first_non_loop_block = next(block for block in self.basic_blocks[i+2:] if block.get_type() !=
-                                                       BasicBlock.BlockType.FOR) if i + 2 < blocks_size else None
-                    if first_non_loop_block is not None:
-                        first_non_loop_block.parents.add(b_id)
-            except:
-                pass
-
-            if i < blocks_size - 1:
-                next_block = self.basic_blocks[i + 1]
-                if self.calculate_tabs(self.basic_blocks[i].get_lead()) < self.calculate_tabs(next_block.get_lead()):
-                    next_block.parents.add(b_id)
-
-        return
+                num_tabs_prev = num_tabs
+                num_tabs = self.calculate_tabs(block.lead)
+        return block_matrix
 
     def calculate_tabs(self, instruction):
         return int((len(instruction) - len(instruction.lstrip(' '))) / 4)
