@@ -35,7 +35,7 @@ class InputProgram:
                 basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.ELIF))
             elif 'if ' in current_leader:
                 basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.IF_THEN))
-            elif 'else: ' in current_leader:
+            elif 'else:' in current_leader:
                 basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.ELSE))
             elif self.num_function_calls(current_leader) > 0:
                 basic_blocks.append(BasicBlock(current_leader, i, BasicBlock.BlockType.FUNCTION))
