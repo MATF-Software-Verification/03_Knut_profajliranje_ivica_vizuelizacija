@@ -81,7 +81,7 @@ class InputProgram:
 
         return leaders
 
-    def determine_parents(self):
+    def get_block_stack(self):
         block_info = []
         num_tabs = 0
         num_tabs_prev = 0
@@ -104,28 +104,17 @@ class InputProgram:
                 # break marker should be calculated
 
                 rev_block_info = block_info[::-1]
-                for info in rev_block_info:
+                for info in rev_block_info: # TODO, this will only work for code with one indent
                     if info[0] in ['IF_THEN', 'ELSE', 'ELIF']:
                         break_marker = 1
                         break
                     elif info[0] == 'FOR':
                         break_marker = 2
                         break
-            else:
-                break_marker = 0
 
             current_block_info = [block.type.name, block.id, break_marker, False]
 
             block_info.append(current_block_info)
-
-
-        # print into file
-        with open('blocks.txt', 'w+') as output:
-            for info in block_info:
-                output.write(f'{info}\n')
-
-            output.flush()
-
 
         return block_info
 
