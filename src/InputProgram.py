@@ -1,4 +1,4 @@
-from src.blocks.BasicBlock import BasicBlock
+from blocks.BasicBlock import BasicBlock
 import re
 
 
@@ -82,23 +82,52 @@ class InputProgram:
         return leaders
 
     def determine_parents(self):
-        block_matrix = []
+        block_info = []
         num_tabs = 0
         num_tabs_prev = 0
-        with open('blocks.txt', "w+") as output:
-            for block in self.basic_blocks:
-                if num_tabs_prev > num_tabs and block.type in [BasicBlock.BlockType.ORDINARY,
-                                                               BasicBlock.BlockType.FUNCTION, BasicBlock.BlockType.ENDING]:
-                    current_block_info = [block.type.name, block.id, num_tabs_prev - num_tabs, False]
-                else:
-                    current_block_info = [block.type.name, block.id, 0, False]
 
-                block_matrix.append(current_block_info)
-                output.write('%s\n' % current_block_info)
+        # these types will be used for marking
+        break_types = [
+            BasicBlock.BlockType.ORDINARY,
+            BasicBlock.BlockType.FUNCTION,
+            BasicBlock.BlockType.ENDING,
+            BasicBlock.BlockType.FOR,
+            BasicBlock.BlockType.IF_THEN
+        ]
 
-                num_tabs_prev = num_tabs
-                num_tabs = self.calculate_tabs(block.lead)
-        return block_matrix
+        for block in self.basic_blocks:
+            num_tabs_prev = num_tabs
+            num_tabs = self.calculate_tabs(block.lead)
+            break_marker = 0
+
+            if num_tabs_prev > num_tabs and block.type in break_types:
+                # break marker should be calculated
+
+                rev_block_info = block_info[::-1]
+                for info in rev_block_info:
+                    if info[0] in ['IF_THEN', 'ELSE', 'ELIF']:
+                        break_marker = 1
+                        break
+                    elif info[0] == 'FOR':
+                        break_marker = 2
+                        break
+            else:
+                break_marker = 0
+
+            current_block_info = [block.type.name, block.id, break_marker, False]
+
+            block_info.append(current_block_info)
+
+
+        # print into file
+        with open('blocks.txt', 'w+') as output:
+            for info in block_info:
+                output.write(f'{info}\n')
+
+            output.flush()
+
+
+        return block_info
 
     def calculate_tabs(self, instruction):
         return int((len(instruction) - len(instruction.lstrip(' '))) / 4)

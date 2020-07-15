@@ -1,33 +1,18 @@
-a = 10
-b = 12
-c = 141
-g = 2314
-h = 1212121
-f = 0
+if 10 == 10:
+    a = 15
+    b = 14
 
-if a > b:
-    h = 12
-    g = 11
-else:
-    c = 20
-    f = 12
+    for i in range(3):
+        c = 10
+        k = 12
 
-if g > 10:
-    g = 100
+    g = 10
+    s = 10
+    s = s + s * g
 
+b = 10
 
-for i in range(10):
-    t = 10
-    f += t
+for i in range(4):
+    b = 15
 
-a = 10
-b = 12
-
-if a == 10:
-    b = 1
-elif a < 10:
-    b = 2
-elif a > 10:
-    b = 3
-
-c = 13
+c = 20
