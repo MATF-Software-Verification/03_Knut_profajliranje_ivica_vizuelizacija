@@ -2,8 +2,10 @@ import sys
 import os
 from pathlib import Path
 
-from src.InputProgram import InputProgram
-from src.checker import check_validity
+from InputProgram import InputProgram
+from checker import check_validity
+
+from utils.Graph import CFG
 
 def main():
     if len(sys.argv) != 3:
@@ -14,15 +16,24 @@ def main():
         print('Input code not valid', file=sys.stderr)
         sys.exit(1)
 
+    block_stack = []
     with open(Path(sys.argv[1]), 'r') as input_file:
         input_program = InputProgram(input_file.read())
         input_program.basic_blocks = input_program.divide_into_basic_blocks(input_program.instructions)
 
         block_id = 1
-        input_program.determine_parents()
+        block_stack = input_program.get_block_stack()
         for block in input_program.basic_blocks:
             print(block.stringify_block())
             block_id += 1
+
+    cfg = CFG(block_stack)
+
+    from pprint import pprint
+    pprint(cfg.graph)
+
+    spanning_tree = cfg.spanning_tree()
+    pprint(spanning_tree)
 
 
 if __name__ == '__main__':
