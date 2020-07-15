@@ -6,6 +6,8 @@ from InputProgram import InputProgram
 from checker import check_validity
 
 from utils.Graph import CFG
+from utils.Knuth import Knuth
+
 
 def main():
     if len(sys.argv) != 3:
@@ -32,8 +34,8 @@ def main():
     from pprint import pprint
     pprint(cfg.graph)
 
-    spanning_tree = cfg.spanning_tree()
-    pprint(spanning_tree)
+    knuth = Knuth(cfg)
+    pprint(knuth.set_edge_weights())
 
 
 if __name__ == '__main__':
