@@ -19,6 +19,7 @@ def main():
         sys.exit(1)
 
     block_stack = []
+    blocks = []
     with open(Path(sys.argv[1]), 'r') as input_file:
         input_program = InputProgram(input_file.read())
         input_program.basic_blocks = input_program.divide_into_basic_blocks(input_program.instructions)
@@ -26,16 +27,27 @@ def main():
         block_id = 1
         block_stack = input_program.get_block_stack()
         for block in input_program.basic_blocks:
-            print(block.stringify_block())
+            # print(block.stringify_block())
+            blocks.append(block)
             block_id += 1
 
+    from pprint import pprint
     cfg = CFG(block_stack)
 
-    from pprint import pprint
-    pprint(cfg.graph)
+    spanning_tree = cfg.spanning_tree()
+
+    spanning_tree_inverse = cfg.spanning_tree_inverse(spanning_tree)
+
+    # instrumentalization TODO
+
+    with open(sys.argv[2], 'w') as output:
+        for block in blocks:
+            output.write(block.stringify_block())
+
+        output.flush()
 
     knuth = Knuth(cfg)
-    pprint(knuth.set_edge_weights())
+    # pprint(knuth.set_edge_weights())
 
 
 if __name__ == '__main__':

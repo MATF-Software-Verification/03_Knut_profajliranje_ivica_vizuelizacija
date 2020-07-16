@@ -4,6 +4,27 @@ from copy import copy
 class CFG():
     def __init__(self, block_stack):
         self.graph = self.generate_graph(block_stack)
+        self.graph = {
+            1: [[2, 10]],
+            2: [[4, 5], [3, 5]],
+            3: [[6, 5]],
+            4: [[5, 5]],
+            5: [[6, 5]],
+            6: [[8, 6], [7, 4]],
+            7: [[8, 4]],
+            8: [[9, 17], [10, 10]],
+            9: [[8, 17]],
+            10: [[11, 10]],
+            11: [[13, 8], [12, 2]],
+            12: [[17, 2]],
+            13: [[15, 6], [14, 2]],
+            14: [[17, 2]],
+            15: [[17, 2], [16, 4]],
+            16: [[17, 4]],
+            17: [['EXIT', 10]],
+            'EXIT': [['START', 10]],
+            'START': [[1, 10]]
+        }
 
 
     def generate_graph(self, blocks):
@@ -153,4 +174,19 @@ class CFG():
                 stack.pop()
 
         return -1
+
+    def spanning_tree_inverse(self, tree=None):
+        if not tree:
+            tree = self.spanning_tree()
+
+        inverse = {}
+        for src_node in self.graph:
+            inverse[src_node] = []
+
+        for src_node in self.graph:
+            for [dest_node, weight] in self.graph[src_node]:
+                if [dest_node, weight] not in tree[src_node]:
+                    inverse[src_node].append([dest_node, weight])
+
+        return inverse
 
