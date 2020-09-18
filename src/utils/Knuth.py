@@ -1,4 +1,4 @@
-from copy import copy
+from copy import copy, deepcopy
 from pprint import pprint
 
 
@@ -22,6 +22,8 @@ class Knuth():
                 if edge not in self.spanning_tree[node]:
                     self.adjacency_list_with_weights[node].append(copy(edge))
 
+        spanning_tree_inverse_graph = deepcopy(self.adjacency_list_with_weights)
+
         # to emulate Knuth's algortihm
         # set weight to zero for every edge in adjacency list
         # that belongs to the spanning tree (edges with no counters!)
@@ -29,6 +31,8 @@ class Knuth():
             for edge in self.spanning_tree[node]:
                 edge_index = self.adjacency_list[node].index(edge)
                 self.adjacency_list[node][edge_index][1] = 0
+
+        spanning_tree_edges_zero_graph = deepcopy(self.adjacency_list)
 
         # get edge representation of the spanning tree (needed for the algorithm)
         spanning_tree_edges = self.get_edges(self.spanning_tree)
@@ -42,7 +46,11 @@ class Knuth():
         # print('***')
         self.calculate_weights(spanning_tree_edges, 'START', None)
 
-        return copy(self.adjacency_list_with_weights)
+        return (
+            spanning_tree_inverse_graph,
+            spanning_tree_edges_zero_graph,
+            copy(self.adjacency_list_with_weights)
+        )
 
 
     def calculate_weights(self, spanning_tree_edges, node, edge):
