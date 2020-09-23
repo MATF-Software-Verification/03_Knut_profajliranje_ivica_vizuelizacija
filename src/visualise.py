@@ -195,24 +195,23 @@ class mainWindow:
         self.nextBtn.place(x=canvasWidth+20, y=650)
 
     def drawList(self, i):
-        sptDesc = "Poslednji korak u kome se dodeljuju tezine svim granama u grafu u odnosu na težine grana koje ne pripadaju razapinjucem stablu."
+        sptDesc = "Poslednji korak u kome se dodeljuju težine svim granama u grafu u odnosu na težine grana koje ne pripadaju razapinjucem stablu."
         self.changeGrapthTextTitle(sptDesc, "Dodavanje težina ostalim \n granama")
         numOfSteps = len(self.list)
         if(i < numOfSteps):
             deleteAllLinks(self.canvas, self.lines)
             self.lines = drawLinks(self.canvas, self.positions, self.list[i], True)
             self.nextBtn.place_forget()
-            self.nextBtn = tk.Button(self.graphWindow, text="Dodaj težinu sledeću granu" , command=(lambda: self.drawList(i+1)))
+            self.nextBtn = tk.Button(self.graphWindow, text="Dodaj težinu za sledeću granu" , command=(lambda: self.drawList(i+1)))
             self.nextBtn.place(x=canvasWidth+20, y=650)
         else:
-            print("CAO")
             self.nextBtn.place_forget()
 
 
     def openNewWindow(self): 
         newWindow = tk.Toplevel() 
         newWindow.title("Vizuelizacija knutovog algoritma") 
-        newWindow.geometry("1200x700")
+        newWindow.geometry("1280x700")
         self.graphWindow = newWindow 
 
 
