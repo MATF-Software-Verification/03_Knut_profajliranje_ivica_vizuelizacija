@@ -26,6 +26,8 @@ class CFG():
             'START': [[1, 10]]
         }
 
+    def getGraph(self):
+        return self.graph
 
     def generate_graph(self, blocks):
         graph = {}

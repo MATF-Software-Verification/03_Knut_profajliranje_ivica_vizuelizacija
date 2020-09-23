@@ -26,6 +26,7 @@ def activate(code):
     from pprint import pprint
     cfg = CFG(block_stack)
 
+    graph = cfg.getGraph()
     spanning_tree = cfg.spanning_tree()
 
     spanning_tree_inverse = cfg.spanning_tree_inverse(spanning_tree)
@@ -35,8 +36,8 @@ def activate(code):
 
     knuth = Knuth(cfg)
 
-    return blocks
-    # pprint(knuth.set_edge_weights())
+    inv_spanning_tree, calculate_weights_steps= knuth.set_edge_weights()
+    return [blocks, graph, spanning_tree, inv_spanning_tree, calculate_weights_steps]
 
 
 def main():
