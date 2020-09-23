@@ -6,6 +6,7 @@ class Knuth():
     def __init__(self, graph):
         self.adjacency_list = graph.graph
         self.spanning_tree = graph.spanning_tree()
+        self.calculate_weights_steps = []
 
     
     def set_edge_weights(self):
@@ -32,8 +33,6 @@ class Knuth():
                 edge_index = self.adjacency_list[node].index(edge)
                 self.adjacency_list[node][edge_index][1] = 0
 
-        spanning_tree_edges_zero_graph = deepcopy(self.adjacency_list)
-
         # get edge representation of the spanning tree (needed for the algorithm)
         spanning_tree_edges = self.get_edges(self.spanning_tree)
 
@@ -48,8 +47,7 @@ class Knuth():
 
         return (
             spanning_tree_inverse_graph,
-            spanning_tree_edges_zero_graph,
-            copy(self.adjacency_list_with_weights)
+            self.calculate_weights_steps
         )
 
 
@@ -72,6 +70,7 @@ class Knuth():
         if edge != None:
             edge[2] = max(in_sum, out_sum) - min(in_sum, out_sum)
             self.adjacency_list_with_weights[edge[0]].append([edge[1], edge[2]])
+            self.calculate_weights_steps.append(deepcopy(self.adjacency_list_with_weights))
 
 
     def get_edges(self, graph=None):
